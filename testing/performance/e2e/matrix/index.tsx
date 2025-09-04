@@ -754,6 +754,8 @@ const ExampleInner = ({ darkMode }) => {
                     floatingFilter: !isSmall,
                     enableCellChangeFlash: true,
                 },
+                alwaysShowHorizontalScroll: true,
+                alwaysShowVerticalScroll: true,
                 rowDragManaged: true,
                 rowDragMultiRow: true,
                 rowGroupPanelShow: isSmall ? undefined : 'always',

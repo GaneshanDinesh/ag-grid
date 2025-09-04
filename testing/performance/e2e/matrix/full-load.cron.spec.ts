@@ -9,7 +9,7 @@ let showBtn: ElementHandle<HTMLButtonElement>;
 
 const url = 'https://localhost:4610/testing/performance/e2e/matrix/index.html';
 const athleteCheck = () => document.body.textContent!.includes('Tony Smith');
-test(`Performance Test - `, {
+test(`Scheduled Performance Test - `, {
     timeout: 20 * 60_000,
     minIterations: 300,
     maxIterations: 500,
@@ -27,7 +27,7 @@ test(`Performance Test - `, {
         ([rowCount, columnCount]) =>
             ({
                 name: 'example',
-                description: 'Scheduled: demo pages', // currently only full load, but scrolling, filtering, grouping, etc. will be added later
+                description: 'Full load', // currently only full load, but scrolling, filtering, grouping, etc. will be added later
                 framework: 'reactFunctionalTs',
                 control: {
                     version: 'local',
