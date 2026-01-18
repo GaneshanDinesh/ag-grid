@@ -1,0 +1,24 @@
+{
+    "_config_": {},
+    "PdfExportParams": {
+        "prependContent": {
+            "description": "Content to put at the top of the PDF export. A 2D array of PdfCell objects or a multi-line string that is split into rows."
+        },
+        "appendContent": {
+            "description": "Content to put at the bottom of the PDF export. A 2D array of PdfCell objects or a multi-line string that is split into rows."
+        },
+        "fileName": {
+            "default": "export.pdf"
+        }
+    },
+    "PdfCell": {
+        "data": {
+            "isRequired": true
+        }
+    },
+    "PdfCellData": {
+        "value": {
+            "isRequired": true
+        }
+    }
+}

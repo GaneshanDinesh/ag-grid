@@ -1742,6 +1742,12 @@
                         },
                         {
                             "type": "item",
+                            "title": "PDF Export",
+                            "path": "pdf-export",
+                            "isEnterprise": true
+                        },
+                        {
+                            "type": "item",
                             "title": "Clipboard",
                             "path": "clipboard",
                             "isEnterprise": true
