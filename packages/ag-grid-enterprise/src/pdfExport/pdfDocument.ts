@@ -808,13 +808,14 @@ function renderRow(
     const textParts: string[] = [];
 
     if (!isCustom) {
+        const shouldDrawBorders = drawCellBorders && !!rowStyles.border;
         if (rowStyles.background) {
             // "rg" sets the fill colour for subsequent drawing.
             pageParts.push(`${formatColor(rowStyles.background)} rg`);
         }
-        if (drawCellBorders && rowStyles.border) {
+        if (shouldDrawBorders) {
             // "RG" sets the stroke colour for subsequent paths.
-            pageParts.push(`${formatColor(rowStyles.border)} RG`);
+            pageParts.push(`${formatColor(rowStyles.border!)} RG`);
         }
 
         row.cells.forEach((cell) => {
@@ -831,7 +832,7 @@ function renderRow(
                 // "re f" draws and fills a rectangle.
                 pageParts.push(`${fmt(x)} ${fmt(rowBottom)} ${fmt(cellWidth)} ${fmt(rowHeight)} re f`);
             }
-            if (drawCellBorders) {
+            if (shouldDrawBorders) {
                 // "re S" draws and strokes a rectangle.
                 pageParts.push(`${fmt(x)} ${fmt(rowBottom)} ${fmt(cellWidth)} ${fmt(rowHeight)} re S`);
             }
@@ -851,7 +852,7 @@ function renderRow(
                 if (rowStyles.background) {
                     pageParts.push(`${fmt(x)} ${fmt(rowBottom)} ${fmt(cellWidth)} ${fmt(rowHeight)} re f`);
                 }
-                if (drawCellBorders) {
+                if (shouldDrawBorders) {
                     pageParts.push(`${fmt(x)} ${fmt(rowBottom)} ${fmt(cellWidth)} ${fmt(rowHeight)} re S`);
                 }
                 x += cellWidth;
@@ -1364,6 +1365,24 @@ function parseColor(value: string): PdfRgba | null | undefined {
         return null;
     }
 
+    const srgbMatch = normalised.match(/^color\(\s*srgb\s+(.+)\)$/);
+    if (srgbMatch) {
+        const raw = srgbMatch[1].trim();
+        const [channelPart, alphaPart] = raw.split('/').map((part) => part.trim());
+        const channels = channelPart.split(/\s+/).filter(Boolean);
+        if (channels.length < 3) {
+            return undefined;
+        }
+        const r = parseColorChannel(channels[0], true);
+        const g = parseColorChannel(channels[1], true);
+        const b = parseColorChannel(channels[2], true);
+        if (r == null || g == null || b == null) {
+            return undefined;
+        }
+        const a = alphaPart ? parseAlpha(alphaPart) : 1;
+        return { r, g, b, a: a ?? 1 };
+    }
+
     if (normalised.startsWith('#')) {
         const hex = normalised.slice(1);
         if (hex.length === 3 || hex.length === 4) {
@@ -1389,7 +1408,7 @@ function parseColor(value: string): PdfRgba | null | undefined {
         if (parts.length < 3) {
             return undefined;
         }
-        const [r, g, b] = parts.slice(0, 3).map(parseRgbChannel);
+        const [r, g, b] = parts.slice(0, 3).map((part) => parseColorChannel(part, false));
         if (r == null || g == null || b == null) {
             return undefined;
         }
@@ -1422,7 +1441,16 @@ function parseColor(value: string): PdfRgba | null | undefined {
  * @param value - Channel value from CSS.
  * @returns Parsed channel value, or null if invalid.
  */
-function parseRgbChannel(value: string): number | null {
+/**
+ * Parse an RGB channel from CSS values.
+ * @param value - Channel value from CSS.
+ * @param scaleUnitless - Whether to scale unitless values in the 0..1 range to 0..255.
+ * @returns Parsed channel value, or null if invalid.
+ */
+function parseColorChannel(value: string, scaleUnitless: boolean): number | null {
+    if (!value) {
+        return null;
+    }
     if (value.endsWith('%')) {
         const percent = parseFloat(value);
         if (!isFinite(percent)) {
@@ -1434,7 +1462,8 @@ function parseRgbChannel(value: string): number | null {
     if (!isFinite(numeric)) {
         return null;
     }
-    return clampChannel(Math.round(numeric));
+    const channel = scaleUnitless && numeric <= 1 ? numeric * 255 : numeric;
+    return clampChannel(Math.round(channel));
 }
 
 /**
@@ -1443,6 +1472,14 @@ function parseRgbChannel(value: string): number | null {
  * @returns Parsed alpha value, or null if invalid.
  */
 function parseAlpha(value: string): number | null {
+    if (value.endsWith('%')) {
+        const percent = parsePercent(value);
+        if (percent == null) {
+            return null;
+        }
+        return percent;
+    }
+
     const numeric = parseFloat(value);
     if (!isFinite(numeric)) {
         return null;

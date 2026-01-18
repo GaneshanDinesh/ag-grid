@@ -128,7 +128,6 @@ export interface PdfExportStyles {
     borderColor?: string;
 }
 
-
 interface PdfFileParams {
     /**
      * String to use as the file name or a function that returns a string.

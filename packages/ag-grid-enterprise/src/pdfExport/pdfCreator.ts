@@ -1,10 +1,4 @@
-import type {
-    IPdfCreator,
-    NamedBean,
-    PdfCustomContent,
-    PdfExportParams,
-    PdfExportStyles,
-} from 'ag-grid-community';
+import type { IPdfCreator, NamedBean, PdfCustomContent, PdfExportParams, PdfExportStyles } from 'ag-grid-community';
 import { BaseCreator, _addGridCommonParams, _downloadFile, _paramToVariableName, _warn } from 'ag-grid-community';
 
 import { PdfSerializingSession } from './pdfSerializingSession';
@@ -147,9 +141,7 @@ export class PdfCreator
      * @param documentTitle - Title value or cell payload.
      * @returns The resolved document title.
      */
-    private resolveDocumentTitle(
-        documentTitle: PdfExportParams['documentTitle']
-    ): PdfExportParams['documentTitle'] {
+    private resolveDocumentTitle(documentTitle: PdfExportParams['documentTitle']): PdfExportParams['documentTitle'] {
         if (!documentTitle || typeof documentTitle === 'string') {
             return documentTitle;
         }
@@ -197,22 +189,25 @@ export class PdfCreator
             return overrideTitle;
         }
 
-        if (baseTitle && typeof baseTitle !== 'string') {
-            return {
-                ...baseTitle,
-                ...overrideTitle,
-                data: {
-                    ...(baseTitle.data ?? {}),
-                    ...(overrideTitle.data ?? {}),
-                },
-                style: {
-                    ...(baseTitle.style ?? {}),
-                    ...(overrideTitle.style ?? {}),
-                },
-            };
+        const baseCell = typeof baseTitle === 'string' ? undefined : baseTitle;
+        const mergedData = {
+            ...(baseCell?.data ?? {}),
+            ...(overrideTitle.data ?? {}),
+        };
+        const baseValue = typeof baseTitle === 'string' ? baseTitle : baseCell?.data?.value;
+        if (mergedData.value == null && baseValue != null) {
+            mergedData.value = baseValue;
         }
 
-        return overrideTitle;
+        return {
+            ...(baseCell ?? {}),
+            ...overrideTitle,
+            data: mergedData,
+            style: {
+                ...(baseCell?.style ?? {}),
+                ...(overrideTitle.style ?? {}),
+            },
+        };
     }
 
     /**
