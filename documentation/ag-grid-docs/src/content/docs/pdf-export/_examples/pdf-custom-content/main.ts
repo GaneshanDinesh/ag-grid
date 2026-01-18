@@ -40,7 +40,22 @@ const gridOptions: GridOptions<IOlympicData> = {
                 return;
             }
 
-            return [[{ data: { value: 'Section break' }, mergeAcross: 3 }]];
+            return [
+                [
+                    {
+                        data: { value: 'Section break' },
+                        mergeAcross: 3,
+                        style: {
+                            backgroundColor: '#fff4cc',
+                            borderColor: '#f0c36d',
+                            borderWidth: 1,
+                            color: '#7a5400',
+                            padding: 6,
+                            alignment: 'center',
+                        },
+                    },
+                ],
+            ];
         },
     },
 };

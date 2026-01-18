@@ -1744,7 +1744,15 @@
                             "type": "item",
                             "title": "PDF Export",
                             "path": "pdf-export",
-                            "isEnterprise": true
+                            "isEnterprise": true,
+                            "children": [
+                                {
+                                    "type": "item",
+                                    "title": "API Reference",
+                                    "path": "pdf-export-api",
+                                    "isEnterprise": true
+                                }
+                            ]
                         },
                         {
                             "type": "item",

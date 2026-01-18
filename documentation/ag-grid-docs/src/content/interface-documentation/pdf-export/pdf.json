@@ -2,10 +2,7 @@
     "_config_": {},
     "PdfExportParams": {
         "documentTitle": {
-            "description": "Document title stored in the PDF metadata. When set, a visible title is rendered above the exported table."
-        },
-        "documentTitleConfig": {
-            "description": "Configuration for the visible document title (font, colours, spacing, border, alignment). Set `enabled=false` to suppress the visible title."
+            "description": "Document title stored in the PDF metadata. When set, a visible title is rendered above the exported table. Provide a PdfCell to style the title."
         },
         "pdfStyles": {
             "description": "Overrides PDF colours using theme-style keys such as `backgroundColor`, `headerBackgroundColor`, and `oddRowBackgroundColor`. Values accept CSS colours."

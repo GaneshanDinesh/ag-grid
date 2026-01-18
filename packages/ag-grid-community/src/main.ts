@@ -126,12 +126,15 @@ export {
     IPdfCreator,
     PdfCell,
     PdfCellData,
+    PdfCellStyle,
     PdfCustomContent,
     PdfExportParams,
+    PdfExportStyles,
     PdfFontFamily,
     PdfMargin,
     PdfPageOrientation,
     PdfPageSize,
+    PdfTextAlignment,
 } from './interfaces/iPdfCreator';
 
 // Drag and Drop

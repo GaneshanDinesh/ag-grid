@@ -52,12 +52,12 @@ in the context menu, or the 'Export to PDF' button provided. Note the following:
 
 1. Header rows repeat on each page by default. Set `repeatHeader=false` to disable this behaviour.
 
-1. PDF export uses built-in fonts and supports basic Latin characters only. Characters outside ASCII are replaced with `?`.
+1. PDF export uses built-in fonts and supports WinAnsi (Latin-1) characters. Characters outside WinAnsi are replaced with `?`.
 {% /note %}
 
 ## Customising PDF Export
 
-Use `PdfExportParams` to control page layout, fonts, row sizing, borders, and extra content. The sections below highlight common customisations.
+Use `PdfExportParams` to control page layout, fonts, row sizing, borders, and extra content. The sections below highlight common customisations. See the [API Reference](./pdf-export-api/) for full details.
 
 ### PDF Styling
 
@@ -78,20 +78,22 @@ api.exportDataAsPdf({
 
 ### Document Title
 
-Use `documentTitle` to set the PDF metadata title shown by most PDF viewers. When set, a visible title is rendered above the table. Use `documentTitleConfig` to control the title box appearance, or set `documentTitleConfig.enabled` to `false` to keep metadata only.
+Use `documentTitle` to set the PDF metadata title shown by most PDF viewers. When set, a visible title is rendered above the table. To style the title box, pass `documentTitle` as a `PdfCell` and use the `style` property.
 
 ```{% frameworkTransform=true %}
 api.exportDataAsPdf({
-    documentTitle: 'Quarterly Results',
-    documentTitleConfig: {
-        fontSize: 16,
-        padding: 6,
-        margin: { bottom: 10 },
-        backgroundColor: '#f3f6fb',
-        borderColor: '#c3d4ea',
-        borderWidth: 1,
-        color: '#123a5a',
-        alignment: 'center',
+    documentTitle: {
+        data: { value: 'Quarterly Results' },
+        style: {
+            fontSize: 16,
+            padding: 6,
+            margin: { bottom: 10 },
+            backgroundColor: '#f3f6fb',
+            borderColor: '#c3d4ea',
+            borderWidth: 1,
+            color: '#123a5a',
+            alignment: 'center',
+        },
     },
 });
 ```
@@ -100,7 +102,7 @@ api.exportDataAsPdf({
 
 ### Custom Content
 
-Use `prependContent`, `appendContent`, or `getCustomContentBelowRow` to inject custom PDF content. A string value is split into lines and each line is rendered as a full-width row. To control column spans explicitly, use `PdfCell` definitions.
+Use `prependContent`, `appendContent`, or `getCustomContentBelowRow` to inject custom PDF content. A string value is split into lines and each line is rendered as a full-width row. To control column spans or styling explicitly, use `PdfCell` definitions with `style`.
 
 ```{% frameworkTransform=true %}
 api.exportDataAsPdf({
@@ -110,87 +112,27 @@ api.exportDataAsPdf({
             return;
         }
 
-        return [[{ data: { value: 'Section break' }, mergeAcross: 3 }]];
+        return [
+            [
+                {
+                    data: { value: 'Section break' },
+                    mergeAcross: 3,
+                    style: {
+                        backgroundColor: '#fff4cc',
+                        borderColor: '#f0c36d',
+                        borderWidth: 1,
+                        color: '#7a5400',
+                        padding: 6,
+                        alignment: 'center',
+                    },
+                },
+            ],
+        ];
     },
 });
 ```
 
 {% gridExampleRunner title="Custom Content" name="pdf-custom-content" exampleHeight=520 /%}
 
-```ts
-type PdfCustomContent = PdfCell[][] | string;
-```
-
-## API
-
-### Grid Properties
-
-{% apiDocumentation source="grid-options/properties.json" section="export" names=["defaultPdfExportParams", "suppressPdfExport"] /%}
-
-### API Methods
-
-{% apiDocumentation source="grid-api/api.json" section="export" names=["exportDataAsPdf", "getDataAsPdf"] /%}
-
-## Interfaces
-
-### PdfExportParams
-
-{% interfaceDocumentation interfaceName="PdfExportParams" overrideSrc="pdf-export/pdf.json" /%}
-
-### PdfExportStyles
-
-{% interfaceDocumentation interfaceName="PdfExportStyles" /%}
-
-### PdfDocumentTitleConfig
-
-{% interfaceDocumentation interfaceName="PdfDocumentTitleConfig" /%}
-
-### PdfCell
-
-{% interfaceDocumentation interfaceName="PdfCell" overrideSrc="pdf-export/pdf.json" /%}
-
-### PdfCellData
-
-{% interfaceDocumentation interfaceName="PdfCellData" overrideSrc="pdf-export/pdf.json" /%}
-
-### PdfMargin
-
-{% interfaceDocumentation interfaceName="PdfMargin" /%}
-
-## Types
-
-### PdfPageOrientation
-
-```ts
-type PdfPageOrientation = 'portrait' | 'landscape';
-```
-
-### PdfPageSize
-
-```ts
-type PdfPageSize =
-    | 'A4'
-    | 'Letter'
-    | {
-          width: number;
-          height: number;
-      };
-```
-
-### PdfFontFamily
-
-```ts
-type PdfFontFamily =
-    | 'Helvetica'
-    | 'Helvetica-Bold'
-    | 'Times-Roman'
-    | 'Times-Bold'
-    | 'Courier'
-    | 'Courier-Bold';
-```
-
-### PdfDocumentTitleAlignment
-
-```ts
-type PdfDocumentTitleAlignment = 'left' | 'center' | 'right';
-```
+## Next Up
+Continue to the next section: [API Reference](./pdf-export-api/).

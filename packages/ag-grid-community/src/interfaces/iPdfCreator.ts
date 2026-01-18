@@ -25,6 +25,49 @@ export interface PdfMargin {
     left?: number;
 }
 
+export type PdfTextAlignment = 'left' | 'center' | 'right';
+
+export interface PdfCellStyle {
+    /**
+     * Font size in points.
+     */
+    fontSize?: number;
+    /**
+     * Font family.
+     */
+    fontFamily?: PdfFontFamily;
+    /**
+     * Text colour.
+     */
+    color?: string;
+    /**
+     * Background colour.
+     */
+    backgroundColor?: string;
+    /**
+     * Border colour.
+     */
+    borderColor?: string;
+    /**
+     * Border width in points.
+     * Defaults to 1 when `borderColor` is set, otherwise 0.
+     */
+    borderWidth?: number;
+    /**
+     * Padding inside the cell in points. A number applies to all sides.
+     */
+    padding?: number | PdfMargin;
+    /**
+     * Margin around the cell in points. A number applies to all sides.
+     * Only applies to the document title.
+     */
+    margin?: number | PdfMargin;
+    /**
+     * Horizontal alignment for the cell text.
+     */
+    alignment?: PdfTextAlignment;
+}
+
 export interface PdfCellData {
     /** The value of the cell. */
     value: string | null;
@@ -38,9 +81,53 @@ export interface PdfCell {
      * @default 0
      */
     mergeAcross?: number;
+    /**
+     * Optional styling for the cell.
+     */
+    style?: PdfCellStyle;
 }
 
 export type PdfCustomContent = PdfCell[][] | string;
+
+export interface PdfExportStyles {
+    /** CSS colour strings that map to theme colour keys. */
+    /**
+     * Background colour for the PDF page.
+     * Defaults to the theme `backgroundColor`.
+     */
+    backgroundColor?: string;
+    /**
+     * Background colour for body rows.
+     * Defaults to the theme `dataBackgroundColor`.
+     */
+    dataBackgroundColor?: string;
+    /**
+     * Alternate background colour for odd body rows.
+     * Defaults to the theme `oddRowBackgroundColor`.
+     */
+    oddRowBackgroundColor?: string;
+    /**
+     * Text colour for body rows.
+     * Defaults to the theme `foregroundColor`.
+     */
+    foregroundColor?: string;
+    /**
+     * Background colour for header rows.
+     * Defaults to the theme `headerBackgroundColor`.
+     */
+    headerBackgroundColor?: string;
+    /**
+     * Text colour for header rows.
+     * Defaults to the theme `headerTextColor`.
+     */
+    headerTextColor?: string;
+    /**
+     * Border colour for cell outlines.
+     * Defaults to the theme `borderColor`.
+     */
+    borderColor?: string;
+}
+
 
 interface PdfFileParams {
     /**
@@ -56,6 +143,16 @@ interface PdfFileParams {
 }
 
 export interface PdfExportParams extends ExportParams<PdfCustomContent>, PdfFileParams {
+    /**
+     * The document title stored in the PDF metadata.
+     * When set, a visible title is rendered above the exported table.
+     * Provide a `PdfCell` to style the title using `PdfCell.style`.
+     */
+    documentTitle?: string | PdfCell;
+    /**
+     * Override PDF colours. Any missing values fall back to the current theme.
+     */
+    pdfStyles?: PdfExportStyles;
     /**
      * The size of the PDF page. Defaults to A4.
      * @default 'A4'

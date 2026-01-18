@@ -2,6 +2,7 @@ import type {
     AgColumn,
     AgColumnGroup,
     GridSerializingParams,
+    PdfCellStyle,
     PdfCustomContent,
     PdfExportParams,
     RowAccumulator,
@@ -14,14 +15,15 @@ import { createPdfDocument } from './pdfDocument';
 
 export type PdfRowType = 'HEADER_GROUPING' | 'HEADER' | 'BODY' | 'CUSTOM';
 
-export interface PdfCell {
+interface PdfSerializingCell {
     value: string;
     mergeAcross?: number;
+    style?: PdfCellStyle;
 }
 
 export interface PdfRow {
     type: PdfRowType;
-    cells: PdfCell[];
+    cells: PdfSerializingCell[];
 }
 
 type PdfGridSerializingParams = GridSerializingParams & PdfExportParams;
@@ -63,6 +65,7 @@ export class PdfSerializingSession extends BaseGridSerializingSession<PdfCustomC
                 row.cells.push({
                     value: String(cell?.data?.value ?? ''),
                     mergeAcross: cell?.mergeAcross,
+                    style: cell?.style,
                 });
             });
         });

@@ -23,6 +23,7 @@ import {
     ExcelExportModule,
     FiltersToolPanelModule,
     IntegratedChartsModule,
+    PdfExportModule,
     RichSelectModule,
     RowGroupingModule,
     RowGroupingPanelModule,
@@ -111,6 +112,7 @@ ModuleRegistry.registerModules([
     IntegratedChartsModule.with(AgChartsEnterpriseModule),
     SparklinesModule.with(AgChartsEnterpriseModule),
     ClipboardModule,
+    PdfExportModule,
 ]);
 
 const numberFormatter: ValueFormatterFunc = ({ value }) => {
