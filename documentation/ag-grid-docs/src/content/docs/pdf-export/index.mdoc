@@ -17,11 +17,13 @@ api.exportDataAsPdf();
 
 For module-based builds, register the `PdfExportModule`:
 
-```{% frameworkTransform=true %}
+```js
 import { ModuleRegistry } from 'ag-grid-community';
 import { PdfExportModule } from 'ag-grid-enterprise';
 
-ModuleRegistry.registerModules([PdfExportModule]);
+ModuleRegistry.registerModules([
+    ModuleRegistry.registerModules([PdfExportModule]);
+]);
 ```
 
 No special configurations or third party libraries are required for either approach. To disable the context menu item, set `suppressPdfExport=true`.
@@ -55,26 +57,65 @@ in the context menu, or the 'Export to PDF' button provided. Note the following:
 
 ## Customising PDF Export
 
-You can customise the PDF output using `PdfExportParams` to control page layout, fonts, row sizing, borders, and extra content. For example:
+Use `PdfExportParams` to control page layout, fonts, row sizing, borders, and extra content. The sections below highlight common customisations.
+
+### PDF Styling
+
+PDF export uses the grid theme colours by default. Use `pdfStyles` to override the key theme colours used in the export (for example `headerBackgroundColor`, `oddRowBackgroundColor`, and `borderColor`). Values accept standard CSS colour strings (hex, rgb, hsl).
 
 ```{% frameworkTransform=true %}
 api.exportDataAsPdf({
-    pageSize: 'Letter',
-    pageOrientation: 'portrait',
-    margin: { top: 24, right: 24, bottom: 24, left: 24 },
-    fontFamily: 'Times-Roman',
-    headerFontFamily: 'Times-Bold',
-    fontSize: 9,
-    headerFontSize: 10,
-    repeatHeader: true,
-    drawCellBorders: true,
-    prependContent: 'Quarterly Results',
+    pdfStyles: {
+        headerBackgroundColor: '#e8f1ff',
+        headerTextColor: '#123a5a',
+        borderColor: '#c3d4ea',
+        oddRowBackgroundColor: '#0057af',
+    },
 });
 ```
+
+{% gridExampleRunner title="PDF Styling" name="pdf-styling" exampleHeight=520 /%}
+
+### Document Title
+
+Use `documentTitle` to set the PDF metadata title shown by most PDF viewers. When set, a visible title is rendered above the table. Use `documentTitleConfig` to control the title box appearance, or set `documentTitleConfig.enabled` to `false` to keep metadata only.
+
+```{% frameworkTransform=true %}
+api.exportDataAsPdf({
+    documentTitle: 'Quarterly Results',
+    documentTitleConfig: {
+        fontSize: 16,
+        padding: 6,
+        margin: { bottom: 10 },
+        backgroundColor: '#f3f6fb',
+        borderColor: '#c3d4ea',
+        borderWidth: 1,
+        color: '#123a5a',
+        alignment: 'center',
+    },
+});
+```
+
+{% gridExampleRunner title="Document Title" name="pdf-document-title" exampleHeight=520 /%}
 
 ### Custom Content
 
 Use `prependContent`, `appendContent`, or `getCustomContentBelowRow` to inject custom PDF content. A string value is split into lines and each line is rendered as a full-width row. To control column spans explicitly, use `PdfCell` definitions.
+
+```{% frameworkTransform=true %}
+api.exportDataAsPdf({
+    getCustomContentBelowRow: (params) => {
+        const rowIndex = params.node.rowIndex;
+        if ((rowIndex + 1) % 5 !== 0) {
+            return;
+        }
+
+        return [[{ data: { value: 'Section break' }, mergeAcross: 3 }]];
+    },
+});
+```
+
+{% gridExampleRunner title="Custom Content" name="pdf-custom-content" exampleHeight=520 /%}
 
 ```ts
 type PdfCustomContent = PdfCell[][] | string;
@@ -95,6 +136,14 @@ type PdfCustomContent = PdfCell[][] | string;
 ### PdfExportParams
 
 {% interfaceDocumentation interfaceName="PdfExportParams" overrideSrc="pdf-export/pdf.json" /%}
+
+### PdfExportStyles
+
+{% interfaceDocumentation interfaceName="PdfExportStyles" /%}
+
+### PdfDocumentTitleConfig
+
+{% interfaceDocumentation interfaceName="PdfDocumentTitleConfig" /%}
 
 ### PdfCell
 
@@ -138,4 +187,10 @@ type PdfFontFamily =
     | 'Times-Bold'
     | 'Courier'
     | 'Courier-Bold';
+```
+
+### PdfDocumentTitleAlignment
+
+```ts
+type PdfDocumentTitleAlignment = 'left' | 'center' | 'right';
 ```
