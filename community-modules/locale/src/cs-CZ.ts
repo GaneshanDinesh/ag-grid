@@ -228,6 +228,7 @@ export const AG_GRID_LOCALE_CZ = {
     export: 'Export',
     csvExport: 'Export CSV',
     excelExport: 'Export Excel',
+    pdfExport: 'Export PDF',
     columnFilter: 'Filtr sloupce',
     columnChooser: 'Vybrat sloupce',
     chooseColumns: 'Vybrat sloupce',
