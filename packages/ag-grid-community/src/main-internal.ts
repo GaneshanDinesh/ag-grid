@@ -193,6 +193,7 @@ export {
     _ContextMenuGridApi,
     _CsvExportGridApi,
     _ExcelExportGridApi,
+    _PdfExportGridApi,
     _FindApi,
     _GridChartsGridApi,
     _InfiniteRowModelGridApi,

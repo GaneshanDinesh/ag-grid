@@ -121,6 +121,19 @@ export {
     RowHeightCallbackParams,
 } from './interfaces/iExcelCreator';
 
+// PDF Export
+export {
+    IPdfCreator,
+    PdfCell,
+    PdfCellData,
+    PdfCustomContent,
+    PdfExportParams,
+    PdfFontFamily,
+    PdfMargin,
+    PdfPageOrientation,
+    PdfPageSize,
+} from './interfaces/iPdfCreator';
+
 // Drag and Drop
 export {
     DragAndDropIcon,
