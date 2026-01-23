@@ -15,7 +15,7 @@ import { combineClassNames, useClickAwayListener } from '../component-utils';
 import { Card } from './Card';
 
 export type UIPopupButtonProps = {
-    dropdownContent: ReactNode;
+    dropdownContent: ReactNode | ((close: () => void) => ReactNode);
     children: ReactNode;
     startDecorator?: React.ReactNode;
     endDecorator?: React.ReactNode;
@@ -60,7 +60,11 @@ export const UIPopupButton = (props: UIPopupButtonProps) => {
             </Button>
             {show && (
                 <DropdownArea ref={refs.setFloating} style={floatingStyles}>
-                    <div className="dropdownWrapper">{props.dropdownContent}</div>
+                    <div className="dropdownWrapper">
+                        {typeof props.dropdownContent === 'function'
+                            ? props.dropdownContent(() => setShow(false))
+                            : props.dropdownContent}
+                    </div>
                 </DropdownArea>
             )}
         </>

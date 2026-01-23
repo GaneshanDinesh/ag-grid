@@ -49,7 +49,7 @@ export class FeatureModel {
         this.label = titleCase(featureName);
         this.docs = partDocs[featureName] || null;
         this.parts = Object.entries(parts).map(([variant, part]) => new PartModel(this, variant, part));
-        this.defaultPart = this.parts.find((pm) => quartzParts.has(pm.part))!;
+        this.defaultPart = this.parts.find((pm) => quartzParts.has(pm.part as any))!;
         if (!this.defaultPart) {
             throw new Error(`Default part for quartz theme is not one of the options for ${featureName}`);
         }
@@ -90,6 +90,10 @@ export class PartModel {
     ) {
         this.label = titleCase(variantName);
         this.id = feature.featureName + '/' + variantName;
+    }
+
+    get exportName(): string {
+        return this.feature.featureName + this.variantName[0].toUpperCase() + this.variantName.slice(1);
     }
 }
 
