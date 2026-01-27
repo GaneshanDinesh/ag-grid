@@ -63,7 +63,7 @@ const Container = styled('div')`
 
 const EditorScroller = styled('div')`
     position: absolute;
-    inset: 0 0 88px 0;
+    inset: 0 0 48px 0;
     overflow-y: auto;
     z-index: 0; // z-index:0 prevents a Safari rendering bug where scrollbars appear over tooltips
 `;
@@ -80,8 +80,7 @@ const MenuBottom = styled('div')`
     right: 0;
     bottom: 0;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    justify-content: space-between;
 
     &:after {
         content: '';

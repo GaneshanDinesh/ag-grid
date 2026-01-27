@@ -1,21 +1,24 @@
 import styled from '@emotion/styled';
 
-import { ThemeCodeDialog, type ThemeCodeDialogTab } from './ThemeCodeDialog';
+import { ThemeImportExportDialog } from './ThemeImportExportDialog';
 import { UIPopupButton } from './UIPopupButton';
 
-const getInitialTab = (): ThemeCodeDialogTab => {
-    if (typeof window !== 'undefined' && window.location.hash === '#import') {
-        return 'import';
-    }
-    return 'export';
-};
+const hasImportHash = () => typeof window !== 'undefined' && window.location.hash === '#import';
 
 export const GetThemeButton = () => (
     <ButtonWrapper>
         <UIPopupButton
             allowedPlacements={['right-end']}
-            dropdownContent={(close) => <ThemeCodeDialog close={close} initialTab={getInitialTab()} />}
+            dropdownContent={(close) => (
+                <ThemeImportExportDialog close={close} initialTab={hasImportHash() ? 'Import' : 'Export'} />
+            )}
             variant="primary"
+            initialOpen={hasImportHash()}
+            onClose={() => {
+                if (hasImportHash()) {
+                    history.replaceState(null, '', window.location.pathname + window.location.search);
+                }
+            }}
         >
             {downloadIcon} Import / Export
         </UIPopupButton>

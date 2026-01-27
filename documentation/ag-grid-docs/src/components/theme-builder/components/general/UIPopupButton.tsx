@@ -6,9 +6,10 @@ import {
     autoUpdate,
     offset,
     shift,
+    size,
     useFloating,
 } from '@floating-ui/react';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import type React from 'react';
 
 import { combineClassNames, useClickAwayListener } from '../component-utils';
@@ -20,9 +21,12 @@ export type UIPopupButtonProps = {
     startDecorator?: React.ReactNode;
     endDecorator?: React.ReactNode;
     className?: string;
+    dropdownClassName?: string;
     variant?: 'primary' | 'secondary';
     allowedPlacements?: Placement[];
     offset?: number;
+    initialOpen?: boolean;
+    onClose?: () => void;
 };
 
 /**
@@ -35,10 +39,35 @@ export const UIPopupButton = (props: UIPopupButtonProps) => {
             autoPlacement({ allowedPlacements: props.allowedPlacements || ['right'] }),
             offset(8),
             shift({ padding: 8 }),
+            size({
+                padding: 8,
+                apply({ availableWidth, availableHeight, elements }) {
+                    if (elements.floating) {
+                        elements.floating.style.setProperty(
+                            '--popup-available-width',
+                            `${Math.floor(availableWidth)}px`
+                        );
+                        elements.floating.style.setProperty(
+                            '--popup-available-height',
+                            `${Math.floor(availableHeight)}px`
+                        );
+                    }
+                },
+            }),
         ],
     };
     const { refs, floatingStyles, elements } = useFloating(floatingOptions);
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(props.initialOpen ?? false);
+
+    const prevShow = useRef(show);
+    const onCloseRef = useRef(props.onClose);
+    onCloseRef.current = props.onClose;
+    useEffect(() => {
+        if (prevShow.current && !show) {
+            onCloseRef.current?.();
+        }
+        prevShow.current = show;
+    }, [show]);
 
     useClickAwayListener(() => setShow(false), [elements.domReference, elements.floating]);
 
@@ -59,7 +88,7 @@ export const UIPopupButton = (props: UIPopupButtonProps) => {
                 {props.endDecorator}
             </Button>
             {show && (
-                <DropdownArea ref={refs.setFloating} style={floatingStyles}>
+                <DropdownArea ref={refs.setFloating} style={floatingStyles} className={props.dropdownClassName}>
                     <div className="dropdownWrapper">
                         {typeof props.dropdownContent === 'function'
                             ? props.dropdownContent(() => setShow(false))
@@ -71,7 +100,7 @@ export const UIPopupButton = (props: UIPopupButtonProps) => {
     );
 };
 
-export const Button = styled('button')`
+const Button = styled('button')`
     height: 44px;
     border-radius: 8px;
     font-weight: 500;

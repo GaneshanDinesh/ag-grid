@@ -2722,7 +2722,7 @@ export const SITE_301_REDIRECTS: Redirect[] = [
     ...pageForAllFrameworks('range-selection-handle', 'cell-selection-handle'),
     ...pageForAllFrameworks('range-selection-fill-handle', 'cell-selection-fill-handle'),
     ...pageForAllFrameworks('selection-overview', 'row-selection'),
-    ...pageForAllFrameworks('applying-theme-builder-styling-grid', 'theming'),
+    ...pageForAllFrameworks('applying-theme-builder-styling-grid', 'theming-theme-builder'),
     ...pageForAllFrameworks('group-expand-collapse-comp', 'grouping'),
     ...pageForAllFrameworks('group-cell-renderer', 'grouping'),
     ...pageForAllFrameworks('group-custom-group-comp', 'grouping'),

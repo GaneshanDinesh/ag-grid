@@ -148,7 +148,13 @@ export function validateAndConvertToPreset({ params, parts, variableWarnings }: 
     };
 
     for (const [name, value] of Object.entries(params)) {
-        if (paramValueToCss(name, value, silentLogger) === false) {
+        let isValid: boolean;
+        try {
+            isValid = paramValueToCss(name, value, silentLogger) !== false;
+        } catch {
+            isValid = false;
+        }
+        if (!isValid) {
             warnings.push(`Invalid value for ${name}: ${JSON.stringify(value)}`);
             continue;
         }
